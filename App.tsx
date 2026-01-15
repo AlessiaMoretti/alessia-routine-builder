@@ -3,7 +3,7 @@ import { FormData, Routine, Language } from './types';
 import { generateRoutine } from './routineGenerator';
 import { getTranslation } from './translations';
 import RoutineForm from './src/RoutineForm';
-import RoutineDisplay from './components/RoutineDisplay';
+import RoutineDisplay from './src/RoutineDisplay';
 import { Sparkles, Globe } from 'lucide-react';
 
 function App() {
