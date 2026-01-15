@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FormData, Goal, TimeAvailable, SkinType, Language } from '../types';
-import { getTranslation } from '../translations';
+import { FormData, Goal, TimeAvailable, SkinType, Language } from './types';
+import { getTranslation } from './translations';
 
 interface RoutineFormProps {
   language: Language;
