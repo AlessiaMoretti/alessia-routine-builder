@@ -1,3 +1,4 @@
+console.log("APP VERSION MARKER: 2026-01-15-1202");
 import { useState } from 'react';
 import { FormData, Routine, Language } from './types';
 import { generateRoutine } from './routineGenerator';
