@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Routine, Language } from '../types';
-import { getTranslation } from '../translations';
+import { Routine, Language } from './types';
+import { getTranslation } from './translations';
 import { Sun, Moon, Lightbulb, ShoppingCart, Copy, RotateCcw, Check } from 'lucide-react';
 
 interface RoutineDisplayProps {
