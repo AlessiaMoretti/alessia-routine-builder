@@ -205,4 +205,6 @@ export const translations = {
   },
 };
 
-export const getTranslation = (lang: Language) => translations[lang];
+export function getTranslation(language: Language | string) {
+  return translations[language] ?? translations["en"];
+}
