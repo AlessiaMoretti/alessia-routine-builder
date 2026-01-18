@@ -22,20 +22,23 @@ export default function RoutineForm({ language, onGenerate }: Props) {
 
   return (
     <div style={{ border: "2px solid green", padding: 16, marginTop: 16 }}>
-      <h2>Routine Form</h2>
+      <h2>{t.routineFormTitle}</h2>
 
       <label>
-        Тип рутина:
+        {t.routineType}:
         <select>
-          <option>Сутрешна</option>
-          <option>Вечерна</option>
+          <option>{t.morning}</option>
+          <option>{t.evening}</option>
         </select>
       </label>
 
       <br />
       <br />
 
-      <button onClick={handleGenerate}>Генерирай рутина</button>
+      <button onClick={handleGenerate}>
+        {t.generateRoutine}
+      </button>
     </div>
   );
 }
+
