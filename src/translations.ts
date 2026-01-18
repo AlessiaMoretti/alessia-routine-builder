@@ -4,6 +4,11 @@ export const translations = {
   en: {
     appTitle: 'Routine Builder',
     appSubtitle: 'Create your personalized health & beauty routine',
+    routineFormTitle: "Routine Form",
+routineType: "Routine type",
+morning: "Morning",
+evening: "Evening",
+generateRoutine: "Generate routine",
     selectGoals: 'Select Your Goals',
     goals: {
       energy: 'Energy',
@@ -105,6 +110,11 @@ export const translations = {
   it: {
     appTitle: 'Creatore di Routine',
     appSubtitle: 'Crea la tua routine personalizzata di salute e bellezza',
+    routineFormTitle: "Modulo Routine",
+routineType: "Tipo di routine",
+morning: "Mattina",
+evening: "Sera",
+generateRoutine: "Genera routine",
     selectGoals: 'Seleziona i Tuoi Obiettivi',
     goals: {
       energy: 'Energia',
