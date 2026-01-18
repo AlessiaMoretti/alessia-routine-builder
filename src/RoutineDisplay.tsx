@@ -4,13 +4,16 @@ import { getTranslation } from './translations';
 import { Sun, Moon, Lightbulb, ShoppingCart, Copy, RotateCcw, Check } from 'lucide-react';
 
 interface RoutineDisplayProps {
-  routine: Routine;
+  routine?: Routine | null;
   language: Language;
   onReset: () => void;
 }
 
 export default function RoutineDisplay({ routine, language, onReset }: RoutineDisplayProps) {
   const t = getTranslation(language);
+  if (!routine) {
+  return null; // или показвай текст: "Generate a routine first"
+}
   const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
 
