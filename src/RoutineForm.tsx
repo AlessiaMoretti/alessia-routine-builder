@@ -10,7 +10,6 @@ export default function RoutineForm({ language, onGenerate }: Props) {
   const t = getTranslation(language);
 
   const handleGenerate = () => {
-    // временно: минимална рутина, само за да тръгне UI-то
     const routine: Routine = {
       morning: [{ name: t.steps.warmWater, duration: 2 }],
       evening: [{ name: t.steps.doubleCleanser, duration: 4 }],
