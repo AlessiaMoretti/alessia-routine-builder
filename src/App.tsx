@@ -13,8 +13,7 @@ export default function App() {
     <div style={{ padding: 24, fontFamily: "sans-serif" }}>
       <h1>Health & Beauty Routine Builder</h1>
 
-      {/* Ако RoutineForm ти връща рутина, после ще го свържем да вика setRoutine */}
-      <RoutineForm />
+      <RoutineForm language={language} onGenerate={setRoutine} />
 
       <div style={{ marginTop: 16 }}>
         <label>
