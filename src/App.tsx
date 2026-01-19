@@ -10,26 +10,30 @@ export default function App() {
   const handleReset = () => setRoutine(null);
 
   return (
-    <div style={{ padding: 24, fontFamily: "sans-serif" }}>
-      <h1>Health & Beauty Routine Builder</h1>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-5xl mx-auto p-6 space-y-6">
+        <h1 className="text-2xl font-bold">Health & Beauty Routine Builder</h1>
 
-      <RoutineForm language={language} onGenerate={setRoutine} />
-
-      <div style={{ marginTop: 16 }}>
-        <label>
-          Language:{" "}
-          <select value={language} onChange={(e) => setLanguage(e.target.value as Language)}>
+        {/* Language selector */}
+        <div className="flex items-center gap-3">
+          <label className="font-medium">Language:</label>
+          <select
+            className="border rounded px-3 py-2"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as Language)}
+          >
             <option value="en">English</option>
             <option value="it">Italiano</option>
           </select>
-        </label>
-      </div>
-
-      {routine ? (
-        <div style={{ marginTop: 24 }}>
-          <RoutineDisplay routine={routine} language={language} onReset={handleReset} />
         </div>
-      ) : null}
+
+        {/* IMPORTANT: render Display only when routine exists */}
+        {routine ? (
+          <RoutineDisplay routine={routine} language={language} onReset={handleReset} />
+        ) : (
+          <RoutineForm language={language} onGenerate={setRoutine} />
+        )}
+      </div>
     </div>
   );
 }
