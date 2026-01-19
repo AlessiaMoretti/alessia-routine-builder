@@ -1,134 +1,116 @@
-import { useState } from 'react';
-import { FormData, Goal, TimeAvailable, SkinType, Language } from '../types';
-import { getTranslation } from '../translations';
+import { useState } from "react";
+import { FormData, Language, Routine } from "./types";
+import { getTranslation } from "./translations";
+import { generateRoutine } from "./routineGenerator";
 
-interface RoutineFormProps {
+type Props = {
   language: Language;
-  onGenerate: (data: FormData) => void;
-}
+  onGenerate: (routine: Routine) => void;
+};
 
-export default function RoutineForm({ language, onGenerate }: RoutineFormProps) {
+export default function RoutineForm({ language, onGenerate }: Props) {
   const t = getTranslation(language);
-  const [selectedGoals, setSelectedGoals] = useState<Goal[]>([]);
-  const [timeAvailable, setTimeAvailable] = useState<TimeAvailable>(10);
-  const [skinType, setSkinType] = useState<SkinType>('normal');
-  const [stressLevel, setStressLevel] = useState(3);
-  const [error, setError] = useState('');
 
-  const goals: { id: Goal; label: string }[] = [
-    { id: 'energy', label: t.goals.energy },
-    { id: 'sleep', label: t.goals.sleep },
-    { id: 'skin', label: t.goals.skin },
-    { id: 'focus', label: t.goals.focus },
-    { id: 'stress', label: t.goals.stress },
-  ];
+  const [formData, setFormData] = useState<FormData>({
+    goals: [],
+    timeAvailable: 10,
+    skinType: "normal",
+    stressLevel: 3,
+  });
 
-  const toggleGoal = (goal: Goal) => {
-    setError('');
-    setSelectedGoals((prev) =>
-      prev.includes(goal) ? prev.filter((g) => g !== goal) : [...prev, goal]
-    );
-  };
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedGoals.length === 0) {
-      setError(t.selectAtLeastOneGoal);
-      return;
-    }
-    onGenerate({
-      goals: selectedGoals,
-      timeAvailable,
-      skinType,
-      stressLevel,
+  const toggleGoal = (goal: FormData["goals"][number]) => {
+    setFormData((prev) => {
+      const exists = prev.goals.includes(goal);
+      return {
+        ...prev,
+        goals: exists ? prev.goals.filter((g) => g !== goal) : [...prev.goals, goal],
+      };
     });
   };
 
+  const handleGenerate = () => {
+    if (formData.goals.length === 0) {
+      setError(t.selectAtLeastOneGoal);
+      return;
+    }
+    setError(null);
+
+    const routine = generateRoutine(formData, language);
+    onGenerate(routine);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          {t.selectGoals}
-        </label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {goals.map((goal) => (
-            <button
-              key={goal.id}
-              type="button"
-              onClick={() => toggleGoal(goal.id)}
-              className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                selectedGoals.includes(goal.id)
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-300'
-              }`}
-            >
-              {goal.label}
-            </button>
+    <div className="space-y-6">
+      <h2 className="text-lg font-semibold">{t.selectGoals}</h2>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {(["energy", "sleep", "skin", "focus", "stress"] as const).map((g) => (
+          <button
+            key={g}
+            type="button"
+            onClick={() => toggleGoal(g)}
+            className={`border rounded-lg py-3 px-4 text-left ${
+              formData.goals.includes(g) ? "border-blue-500 bg-blue-50" : "border-gray-200"
+            }`}
+          >
+            {t.goals[g]}
+          </button>
+        ))}
+      </div>
+
+      {error && <div className="text-red-600 font-medium">{error}</div>}
+
+      <div className="space-y-2">
+        <label className="font-medium">{t.timeAvailable}</label>
+        <select
+          className="w-full border rounded px-3 py-2"
+          value={formData.timeAvailable}
+          onChange={(e) => setFormData({ ...formData, timeAvailable: Number(e.target.value) })}
+        >
+          {[5, 10, 15, 20, 30].map((m) => (
+            <option key={m} value={m}>
+              {m} {t.minutes}
+            </option>
           ))}
-        </div>
-        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          {t.timeAvailable}
-        </label>
-        <select
-          value={timeAvailable}
-          onChange={(e) => setTimeAvailable(Number(e.target.value) as TimeAvailable)}
-          className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-colors"
-        >
-          <option value={5}>5 {t.minutes}</option>
-          <option value={10}>10 {t.minutes}</option>
-          <option value={20}>20 {t.minutes}</option>
         </select>
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          {t.skinType}
-        </label>
+      <div className="space-y-2">
+        <label className="font-medium">{t.skinType}</label>
         <select
-          value={skinType}
-          onChange={(e) => setSkinType(e.target.value as SkinType)}
-          className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:outline-none transition-colors"
+          className="w-full border rounded px-3 py-2"
+          value={formData.skinType}
+          onChange={(e) => setFormData({ ...formData, skinType: e.target.value as any })}
         >
-          <option value="normal">{t.skinTypes.normal}</option>
-          <option value="dry">{t.skinTypes.dry}</option>
-          <option value="oily">{t.skinTypes.oily}</option>
-          <option value="combination">{t.skinTypes.combination}</option>
-          <option value="sensitive">{t.skinTypes.sensitive}</option>
+          {(["normal", "dry", "oily", "combination", "sensitive"] as const).map((s) => (
+            <option key={s} value={s}>
+              {t.skinTypes[s]}
+            </option>
+          ))}
         </select>
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          {t.stressLevel}
-        </label>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600">{t.stressLow}</span>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            value={stressLevel}
-            onChange={(e) => setStressLevel(Number(e.target.value))}
-            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-          />
-          <span className="text-sm text-gray-600">{t.stressHigh}</span>
-          <span className="w-8 text-center font-semibold text-blue-600">
-            {stressLevel}
-          </span>
-        </div>
+      <div className="space-y-2">
+        <label className="font-medium">{t.stressLevel}</label>
+        <input
+          className="w-full"
+          type="range"
+          min={1}
+          max={5}
+          value={formData.stressLevel}
+          onChange={(e) => setFormData({ ...formData, stressLevel: Number(e.target.value) })}
+        />
       </div>
 
       <button
-        type="submit"
-        className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+        type="button"
+        onClick={handleGenerate}
+        className="w-full bg-blue-600 text-white font-semibold py-4 rounded-lg hover:bg-blue-700"
       >
         {t.generate}
       </button>
-    </form>
+    </div>
   );
 }
-
